@@ -1,0 +1,11 @@
+name := "integration"
+scalaVersion := "2.12.4"
+libraryDependencies += "com.lightbend.akka" %% "akka-stream-alpakka-file" % "0.16"
+libraryDependencies += "com.lightbend.akka" %% "akka-stream-alpakka-jms" % "0.16"
+libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.7.6"
+libraryDependencies += "javax.jms" % "jms" % "1.1"
+libraryDependencies += "org.apache.activemq" % "activemq-all" % "5.15.2"
+libraryDependencies += "junit" % "junit" % "4.11" % "test"
+libraryDependencies += "com.novocode" % "junit-interface" % "0.10" % "test"
+libraryDependencies += "org.hamcrest" % "hamcrest-all" % "1.3"
+testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a")
