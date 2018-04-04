@@ -39,10 +39,10 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import javax.jms.ConnectionFactory;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import akka.stream.alpakka.jms.javadsl.JmsSink;
-import akka.stream.alpakka.jms.javadsl.JmsSource;
-import akka.stream.alpakka.jms.JmsSinkSettings;
-import akka.stream.alpakka.jms.JmsSourceSettings;
+import akka.stream.alpakka.jms.javadsl.JmsProducer;
+import akka.stream.alpakka.jms.javadsl.JmsConsumer;
+import akka.stream.alpakka.jms.JmsConsumerSettings;
+import akka.stream.alpakka.jms.JmsProducerSettings;
 
 public final class PresentationDemo {
 
@@ -209,7 +209,7 @@ public final class PresentationDemo {
         break;
       case jms:
         final URI connectionURI = new URI(inputURI.getSchemeSpecificPart());
-        input = JmsSource.textSource(JmsSourceSettings.create(new ActiveMQConnectionFactory(connectionURI)).withQueue("orders").withBufferSize(8)).via(jsonToOrder);
+        input = JmsConsumer.textSource(JmsConsumerSettings.create(new ActiveMQConnectionFactory(connectionURI)).withQueue("orders").withBufferSize(8)).via(jsonToOrder);
         break;
       case test:
         input = generateOrders.take(1000);
@@ -231,7 +231,7 @@ public final class PresentationDemo {
         break;
       case jms:
         final URI connectionURI = new URI(outputURI.getSchemeSpecificPart());
-        output = invoiceToJson.toMat(JmsSink.textSink(JmsSinkSettings.create(new ActiveMQConnectionFactory(connectionURI)).withQueue("invoices")), Keep.right());
+        output = invoiceToJson.toMat(JmsProducer.textSink(JmsProducerSettings.create(new ActiveMQConnectionFactory(connectionURI)).withQueue("invoices")), Keep.right());
         break;
       case test:
         output = Flow.of(Invoice.class).fold(0L, (acc, i) -> acc + 1).toMat(Sink.foreach(sum -> System.out.println("Processed " + sum + " orders into invoices.")), Keep.right());
